@@ -81,6 +81,17 @@ public class RotoMonsterTwitterClient : IRotoMonsterTwitterClient
             MaxResults = maxResults
         }, ct);
 
+    public Task<GetTweetsResult> GetTweetsAddedSinceAsync(
+        DateTime addedOnOrAfter, int? sportId = null, int maxResults = 100,
+        CancellationToken ct = default)
+        => GetTweetsAsync(new GetTweetsRequest
+        {
+            AddedOnOrAfter = addedOnOrAfter,
+            SportId = sportId,
+            MaxResults = maxResults,
+            OrderByDateAdded = true
+        }, ct);
+
     public async Task<ReadTweetResult> ReadTweetAsync(
         string tweetId, CancellationToken ct = default)
     {

@@ -33,13 +33,22 @@ public class TweetService : ITweetService
         if (request.CreatedOnOrBefore.HasValue)
             query = query.Where(t => t.CreatedDate <= request.CreatedOnOrBefore.Value);
 
+        if (request.AddedOnOrAfter.HasValue)
+            query = query.Where(t => t.DateAdded >= request.AddedOnOrAfter.Value);
+
+        if (request.AddedOnOrBefore.HasValue)
+            query = query.Where(t => t.DateAdded <= request.AddedOnOrBefore.Value);
+
         if (!string.IsNullOrWhiteSpace(request.SearchText))
             query = query.Where(t => EF.Functions.ILike(t.Text, $"%{request.SearchText}%"));
 
         var total = await query.CountAsync(ct);
 
+        query = request.OrderByDateAdded
+            ? query.OrderByDescending(t => t.DateAdded).ThenByDescending(t => t.CreatedDate)
+            : query.OrderByDescending(t => t.CreatedDate);
+
         var tweets = await query
-            .OrderByDescending(t => t.CreatedDate)
             .Skip(Math.Max(0, request.Skip))
             .Take(Math.Clamp(request.MaxResults, 1, 500))
             .ToListAsync(ct);
@@ -120,6 +129,7 @@ public class TweetService : ITweetService
         TweetId = t.TweetId,
         SportId = t.SportId,
         CreatedDate = t.CreatedDate,
+        DateAdded = t.DateAdded,
         Text = t.Text,
         TwitterUserId = t.TwitterUserId,
         ScreenUsername = t.TweetUser?.ScreenUsername ?? "",

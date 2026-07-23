@@ -4,7 +4,13 @@ public class TweetResult
 {
     public string TweetId { get; set; } = "";
     public int SportId { get; set; }
+
+    /// <summary>When the tweet was posted.</summary>
     public DateTime CreatedDate { get; set; }
+
+    /// <summary>When we stored it. Record this as your polling watermark.</summary>
+    public DateTime? DateAdded { get; set; }
+
     public string Text { get; set; } = "";
 
     public string TwitterUserId { get; set; } = "";

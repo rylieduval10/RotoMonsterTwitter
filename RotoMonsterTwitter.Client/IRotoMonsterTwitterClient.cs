@@ -17,6 +17,13 @@ public interface IRotoMonsterTwitterClient
     Task<GetTweetsResult> GetTweetsSinceAsync(int sportId, DateTime createdOnOrAfter,
         int maxResults = 100, CancellationToken ct = default);
 
+    /// <summary>
+    /// Everything stored since the given point, newest first. Pass the
+    /// DateAdded of the newest tweet you already handled.
+    /// </summary>
+    Task<GetTweetsResult> GetTweetsAddedSinceAsync(DateTime addedOnOrAfter,
+        int? sportId = null, int maxResults = 100, CancellationToken ct = default);
+
     Task<ReadTweetResult> ReadTweetAsync(string tweetId, CancellationToken ct = default);
 
     Task<GetTweetsResult> ReadTweetListAsync(long listId, int maxResults = 100,
