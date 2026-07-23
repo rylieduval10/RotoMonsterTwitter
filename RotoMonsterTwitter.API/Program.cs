@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using RotoMonsterTwitter.API.Middleware;
 using RotoMonsterTwitter.Model.Configuration;
 using RotoMonsterTwitter.Model.Data;
 using RotoMonsterTwitter.Model.Services;
@@ -12,6 +13,12 @@ builder.Services.AddDbContext<TwitterDbContext>(options =>
 builder.Services.Configure<TwitterApiOptions>(
     builder.Configuration.GetSection(TwitterApiOptions.SectionName));
 
+builder.Services.Configure<TwitterPostOptions>(
+    builder.Configuration.GetSection(TwitterPostOptions.SectionName));
+
+builder.Services.Configure<ApiKeyOptions>(
+    builder.Configuration.GetSection(ApiKeyOptions.SectionName));
+
 builder.Services.AddHttpClient<ITwitterApiService, TwitterApiService>((sp, client) =>
 {
     var options = sp.GetRequiredService<IOptions<TwitterApiOptions>>().Value;
@@ -19,6 +26,9 @@ builder.Services.AddHttpClient<ITwitterApiService, TwitterApiService>((sp, clien
     client.DefaultRequestHeaders.UserAgent.ParseAdd(options.UserAgent);
     client.Timeout = TimeSpan.FromSeconds(30);
 });
+
+builder.Services.AddHttpClient<ITwitterPosterService, TwitterPosterService>(
+    client => client.Timeout = TimeSpan.FromSeconds(30));
 
 builder.Services.AddScoped<ITweetService, TweetService>();
 builder.Services.AddScoped<ITweetIngestService, TweetIngestService>();
@@ -32,6 +42,8 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+app.UseMiddleware<ApiKeyMiddleware>();
 
 app.MapControllers();
 

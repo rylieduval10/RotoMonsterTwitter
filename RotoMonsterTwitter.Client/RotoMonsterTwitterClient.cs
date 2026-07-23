@@ -15,7 +15,7 @@ public class RotoMonsterTwitterClient : IRotoMonsterTwitterClient
     private readonly HttpClient _http;
 
     /// <summary>
-    /// Preferred constructor. Register with AddHttpClient so connections are pooled.
+    /// Preferred constructor. Register with AddHttpClient so connections pool.
     /// </summary>
     public RotoMonsterTwitterClient(HttpClient http)
     {
@@ -24,22 +24,36 @@ public class RotoMonsterTwitterClient : IRotoMonsterTwitterClient
 
     /// <summary>
     /// Convenience constructor for scripts and one-off callers. Creates its own
-    /// HttpClient, so hold onto the instance rather than newing one per call.
+    /// HttpClient, so hold the instance rather than newing one per call.
     /// </summary>
-    public RotoMonsterTwitterClient(string baseUrl, int timeoutSeconds = 30)
-        : this(new HttpClient
+    public RotoMonsterTwitterClient(string baseUrl, string apiKey = "",
+        int timeoutSeconds = 30)
+        : this(Build(baseUrl, apiKey, timeoutSeconds))
+    {
+    }
+
+    private static HttpClient Build(string baseUrl, string apiKey, int timeoutSeconds)
+    {
+        var client = new HttpClient
         {
             BaseAddress = new Uri(baseUrl.TrimEnd('/') + "/"),
             Timeout = TimeSpan.FromSeconds(timeoutSeconds)
-        })
-    {
+        };
+
+        if (!string.IsNullOrWhiteSpace(apiKey))
+        {
+            client.DefaultRequestHeaders.Add("X-API-Key", apiKey);
+        }
+
+        return client;
     }
 
     // ---------------------------------------------------------------- reads
 
     public Task<GetTweetsResult> GetTweetsAsync(
         GetTweetsRequest request, CancellationToken ct = default)
-        => PostAsync<GetTweetsRequest, GetTweetsResult>("api/tweets/GetTweets", request, ct);
+        => PostAsync<GetTweetsRequest, GetTweetsResult>(
+            "api/tweets/GetTweets", request, ct);
 
     public Task<GetTweetsResult> GetTweetsBySportAsync(
         int sportId, int maxResults = 100, CancellationToken ct = default)
@@ -72,7 +86,11 @@ public class RotoMonsterTwitterClient : IRotoMonsterTwitterClient
     {
         if (string.IsNullOrWhiteSpace(tweetId))
         {
-            return new ReadTweetResult { Success = false, ErrorMessage = "TweetId is required." };
+            return new ReadTweetResult
+            {
+                Success = false,
+                ErrorMessage = "TweetId is required."
+            };
         }
 
         return await GetAsync<ReadTweetResult>(
@@ -106,18 +124,10 @@ public class RotoMonsterTwitterClient : IRotoMonsterTwitterClient
 
     // ----------------------------------------------------------------- post
 
-    /// <summary>
-    /// Ken's spec asks for posting a tweet from the client. This is not built yet:
-    /// twitterapi.io is a read API, so posting means going through X's own API,
-    /// which needs its own developer account, OAuth credentials and paid tier.
-    /// Waiting on Ken to confirm the account before wiring it up.
-    /// </summary>
-    public Task<BaseResult> PostTweetAsync(string text, CancellationToken ct = default)
-        => Task.FromResult(new BaseResult
-        {
-            Success = false,
-            ErrorMessage = "Posting is not implemented yet - pending X API credentials."
-        });
+    public Task<PostTweetResult> PostTweetAsync(
+        string text, CancellationToken ct = default)
+        => PostAsync<PostTweetRequest, PostTweetResult>(
+            "api/tweets/PostTweet", new PostTweetRequest { Text = text }, ct);
 
     // -------------------------------------------------------------- plumbing
 
