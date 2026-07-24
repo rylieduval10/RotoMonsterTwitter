@@ -5,3 +5,7 @@ obj/
 *.user
 *.suo
 RotoMonsterTwitter.ClientTest/
+publish/
+rmt-*.sh
+*.zip
+appsettings.Development.json
