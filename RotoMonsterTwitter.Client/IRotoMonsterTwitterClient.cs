@@ -38,6 +38,13 @@ public interface IRotoMonsterTwitterClient
     /// <summary>Pull new tweets for a list. Call this on a schedule.</summary>
     Task<IngestResult> IngestListAsync(long listId, CancellationToken ct = default);
 
+    /// <summary>
+    /// Replace the player and team pool for a sport. Send the complete
+    /// set each time - anything missing from it is dropped.
+    /// </summary>
+    Task<ImportResult> ImportPlayersAsync(PlayerImportRequest request,
+        CancellationToken ct = default);
+
     /// <summary>Post a tweet through the API's X credentials.</summary>
     Task<PostTweetResult> PostTweetAsync(string text, CancellationToken ct = default);
 }

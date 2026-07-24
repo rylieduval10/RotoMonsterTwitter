@@ -133,6 +133,13 @@ public class RotoMonsterTwitterClient : IRotoMonsterTwitterClient
     public Task<IngestResult> IngestListAsync(long listId, CancellationToken ct = default)
         => PostAsync<object, IngestResult>($"api/tweets/Ingest/{listId}", new { }, ct);
 
+    // --------------------------------------------------------------- import
+
+    public Task<ImportResult> ImportPlayersAsync(
+        PlayerImportRequest request, CancellationToken ct = default)
+        => PostAsync<PlayerImportRequest, ImportResult>(
+            "api/import/players", request, ct);
+
     // ----------------------------------------------------------------- post
 
     public Task<PostTweetResult> PostTweetAsync(
