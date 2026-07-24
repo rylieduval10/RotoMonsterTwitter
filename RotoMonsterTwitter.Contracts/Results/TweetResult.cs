@@ -5,10 +5,7 @@ public class TweetResult
     public string TweetId { get; set; } = "";
     public int SportId { get; set; }
 
-    /// <summary>When the tweet was posted.</summary>
     public DateTime CreatedDate { get; set; }
-
-    /// <summary>When we stored it. Record this as your polling watermark.</summary>
     public DateTime? DateAdded { get; set; }
 
     public string Text { get; set; } = "";
@@ -29,7 +26,18 @@ public class TweetResult
     public int? RetweetCount { get; set; }
     public int? Followers { get; set; }
 
+    public DateTime? ProcessedAt { get; set; }
+
     public List<TweetMediaResult> Media { get; set; } = new();
+
+    /// <summary>Players referenced, best match first.</summary>
+    public List<TweetPlayerMatch> Players { get; set; } = new();
+
+    /// <summary>Teams referenced, best match first.</summary>
+    public List<TweetTeamMatch> Teams { get; set; } = new();
+
+    /// <summary>Injury / availability / transaction keywords found.</summary>
+    public List<TweetKeywordMatch> Keywords { get; set; } = new();
 }
 
 public class TweetMediaResult
@@ -39,4 +47,39 @@ public class TweetMediaResult
     public string? VideoUrl { get; set; }
     public int? DurationMillis { get; set; }
     public short DisplayOrder { get; set; }
+}
+
+public class TweetPlayerMatch
+{
+    public int PlayerId { get; set; }
+    public string FirstName { get; set; } = "";
+    public string LastName { get; set; } = "";
+    public int? TeamId { get; set; }
+
+    /// <summary>FullName, Alias or LastName.</summary>
+    public string MatchType { get; set; } = "";
+
+    /// <summary>1.0 solid, down to 0.35 for a common-word surname. Filter here.</summary>
+    public decimal Confidence { get; set; }
+
+    public int Occurrences { get; set; }
+}
+
+public class TweetTeamMatch
+{
+    public int TeamId { get; set; }
+    public string City { get; set; } = "";
+    public string Name { get; set; } = "";
+    public string MatchType { get; set; } = "";
+    public decimal Confidence { get; set; }
+    public int Occurrences { get; set; }
+}
+
+public class TweetKeywordMatch
+{
+    public int KeywordId { get; set; }
+    public string Keyword { get; set; } = "";
+    public string Category { get; set; } = "";
+    public decimal Weight { get; set; }
+    public int Occurrences { get; set; }
 }

@@ -10,15 +10,18 @@ namespace RotoMonsterTwitter.Model.Services;
 public class TweetIngestService : ITweetIngestService
 {
     private readonly TwitterDbContext _db;
+    private readonly ITweetProcessingService _processing;
     private readonly ITwitterApiService _api;
     private readonly TwitterApiOptions _options;
 
     public TweetIngestService(TwitterDbContext db, ITwitterApiService api,
-        IOptions<TwitterApiOptions> options)
+        IOptions<TwitterApiOptions> options,
+        ITweetProcessingService processing)
     {
         _db = db;
         _api = api;
         _options = options.Value;
+        _processing = processing;
     }
 
     public async Task<IngestResult> IngestListAsync(long listId, CancellationToken ct = default)
@@ -175,6 +178,27 @@ public class TweetIngestService : ITweetIngestService
         result.NewSinceUnix = list.LastFetchedUnix;
 
         await _db.SaveChangesAsync(ct);
+
+        // A pull should leave tweets ready to read, so process the new ones now.
+        if (result.Success && result.NewTweets > 0)
+        {
+            try
+            {
+                var processed = await _processing.ProcessAsync(
+                    batchSize: Math.Max(result.NewTweets, 100),
+                    reprocessAll: false, ct: ct);
+
+                result.TweetsProcessed = processed.TweetsProcessed;
+                result.MatchesCreated = processed.KeywordMatches
+                    + processed.PlayerMatches + processed.TeamMatches;
+            }
+            catch
+            {
+                // Ingest succeeded; don't fail the whole call if the follow-on
+                // processing hiccups. The tweets are stored and the next run
+                // will process them.
+            }
+        }
 
         return result;
     }
