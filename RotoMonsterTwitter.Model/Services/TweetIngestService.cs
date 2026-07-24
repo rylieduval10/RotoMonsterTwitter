@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 using RotoMonsterTwitter.Model.Configuration;
 using RotoMonsterTwitter.Model.Data;
 using RotoMonsterTwitter.Model.Entities;
-using RotoMonsterTwitter.Model.Results;
+using RotoMonsterTwitter.Contracts.Results;
 
 namespace RotoMonsterTwitter.Model.Services;
 

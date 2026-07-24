@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using RotoMonsterTwitter.Model.Configuration;
-using RotoMonsterTwitter.Model.Results;
+using RotoMonsterTwitter.Contracts.Results;
 
 namespace RotoMonsterTwitter.Model.Services;
 

@@ -1,7 +1,7 @@
 using System.Net.Http.Json;
 using System.Text.Json;
-using RotoMonsterTwitter.Model.Requests;
-using RotoMonsterTwitter.Model.Results;
+using RotoMonsterTwitter.Contracts.Requests;
+using RotoMonsterTwitter.Contracts.Results;
 
 namespace RotoMonsterTwitter.Client;
 
@@ -184,7 +184,7 @@ public class RotoMonsterTwitterClient : IRotoMonsterTwitterClient
     {
         if (!response.IsSuccessStatusCode)
         {
-            var body = await response.Content.ReadAsStringAsync(ct);
+            var body = await response.Content.ReadAsStringAsync();
             return new TResult
             {
                 Success = false,
@@ -205,5 +205,5 @@ public class RotoMonsterTwitterClient : IRotoMonsterTwitterClient
         => new() { Success = false, ErrorMessage = ex.Message };
 
     private static string Trim(string value)
-        => value.Length > 300 ? value[..300] + "..." : value;
+        => value.Length > 300 ? value.Substring(0, 300) + "..." : value;
 }

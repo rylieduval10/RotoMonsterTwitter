@@ -1,5 +1,5 @@
-using RotoMonsterTwitter.Model.Requests;
-using RotoMonsterTwitter.Model.Results;
+using RotoMonsterTwitter.Contracts.Requests;
+using RotoMonsterTwitter.Contracts.Results;
 
 namespace RotoMonsterTwitter.Model.Services;
 

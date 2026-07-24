@@ -1,4 +1,4 @@
-namespace RotoMonsterTwitter.Model.Requests;
+namespace RotoMonsterTwitter.Contracts.Requests;
 
 /// <summary>
 /// The whole player and team pool for one sport. Sent complete each time -

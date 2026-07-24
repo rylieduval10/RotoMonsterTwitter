@@ -1,5 +1,5 @@
 using System.Text.Json;
-using RotoMonsterTwitter.Model.Requests;
+using RotoMonsterTwitter.Contracts.Requests;
 
 namespace RotoMonsterTwitter.Client;
 

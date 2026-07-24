@@ -1,4 +1,4 @@
-using RotoMonsterTwitter.Model.Results;
+using RotoMonsterTwitter.Contracts.Results;
 
 namespace RotoMonsterTwitter.Model.Services;
 

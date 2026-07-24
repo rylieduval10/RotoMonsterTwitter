@@ -1,4 +1,4 @@
-namespace RotoMonsterTwitter.Model.Requests;
+namespace RotoMonsterTwitter.Contracts.Requests;
 
 public class DeleteTweetsRequest
 {

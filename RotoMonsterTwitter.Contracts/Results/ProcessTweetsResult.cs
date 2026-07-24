@@ -1,4 +1,4 @@
-namespace RotoMonsterTwitter.Model.Results;
+namespace RotoMonsterTwitter.Contracts.Results;
 
 public class ProcessTweetsResult : BaseResult
 {

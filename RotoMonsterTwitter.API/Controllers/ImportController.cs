@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using RotoMonsterTwitter.Model.Requests;
+using RotoMonsterTwitter.Contracts.Requests;
 using RotoMonsterTwitter.Model.Services;
 
 namespace RotoMonsterTwitter.API.Controllers;
