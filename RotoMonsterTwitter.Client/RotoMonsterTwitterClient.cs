@@ -154,8 +154,8 @@ public class RotoMonsterTwitterClient : IRotoMonsterTwitterClient
     {
         try
         {
-            var response = await _http.GetAsync(path, ct);
-            return await ReadResultAsync<TResult>(response, ct);
+            var response = await _http.GetAsync(path, ct).ConfigureAwait(false);
+            return await ReadResultAsync<TResult>(response, ct).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -169,8 +169,8 @@ public class RotoMonsterTwitterClient : IRotoMonsterTwitterClient
     {
         try
         {
-            var response = await _http.PostAsJsonAsync(path, body, JsonOptions, ct);
-            return await ReadResultAsync<TResult>(response, ct);
+            var response = await _http.PostAsJsonAsync(path, body, JsonOptions, ct).ConfigureAwait(false);
+            return await ReadResultAsync<TResult>(response, ct).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -184,7 +184,7 @@ public class RotoMonsterTwitterClient : IRotoMonsterTwitterClient
     {
         if (!response.IsSuccessStatusCode)
         {
-            var body = await response.Content.ReadAsStringAsync();
+            var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             return new TResult
             {
                 Success = false,
@@ -192,7 +192,7 @@ public class RotoMonsterTwitterClient : IRotoMonsterTwitterClient
             };
         }
 
-        var result = await response.Content.ReadFromJsonAsync<TResult>(JsonOptions, ct);
+        var result = await response.Content.ReadFromJsonAsync<TResult>(JsonOptions, ct).ConfigureAwait(false);
 
         return result ?? new TResult
         {

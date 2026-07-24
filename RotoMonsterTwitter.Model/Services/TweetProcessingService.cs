@@ -191,6 +191,16 @@ public class TweetProcessingService : ITweetProcessingService
 
         if (count == 0) return null;
 
+        // Guard against a first name being read as a surname. If the token only
+        // ever appears as someone's given name (e.g. "Ryan Silverfield" for a
+        // player named ... Ryan), it's noise. We treat a surname that is also a
+        // common given name, with the player's own first name absent, as weak
+        // enough to drop.
+        if (CommonFirstNames.IsCommonFirstName(player.NormalizedLastName))
+        {
+            return null;
+        }
+
         var confidence = CommonWords.IsCommonWord(player.NormalizedLastName)
             ? CommonWordConfidence
             : LastNameConfidence;
