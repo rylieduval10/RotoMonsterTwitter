@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RotoMonsterTwitter.Model.Data;
@@ -11,9 +12,11 @@ using RotoMonsterTwitter.Model.Data;
 namespace RotoMonsterTwitter.Model.Migrations
 {
     [DbContext(typeof(TwitterDbContext))]
-    partial class TwitterDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260724155336_AddKeywordProcessing")]
+    partial class AddKeywordProcessing
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -143,64 +146,6 @@ namespace RotoMonsterTwitter.Model.Migrations
                     b.ToTable("TweetMedia", (string)null);
                 });
 
-            modelBuilder.Entity("RotoMonsterTwitter.Model.Entities.TweetPlayer", b =>
-                {
-                    b.Property<string>("TweetId")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<int>("PlayerId")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("Confidence")
-                        .HasPrecision(3, 2)
-                        .HasColumnType("numeric(3,2)");
-
-                    b.Property<string>("MatchType")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<int>("Occurrences")
-                        .HasColumnType("integer");
-
-                    b.HasKey("TweetId", "PlayerId");
-
-                    b.HasIndex("Confidence");
-
-                    b.HasIndex("PlayerId");
-
-                    b.ToTable("TweetPlayers", (string)null);
-                });
-
-            modelBuilder.Entity("RotoMonsterTwitter.Model.Entities.TweetTeam", b =>
-                {
-                    b.Property<string>("TweetId")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<int>("TeamId")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("Confidence")
-                        .HasPrecision(3, 2)
-                        .HasColumnType("numeric(3,2)");
-
-                    b.Property<string>("MatchType")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<int>("Occurrences")
-                        .HasColumnType("integer");
-
-                    b.HasKey("TweetId", "TeamId");
-
-                    b.HasIndex("TeamId");
-
-                    b.ToTable("TweetTeams", (string)null);
-                });
-
             modelBuilder.Entity("RotoMonsterTwitter.Model.Entities.TweetUser", b =>
                 {
                     b.Property<long>("Id")
@@ -321,162 +266,6 @@ namespace RotoMonsterTwitter.Model.Migrations
                     b.ToTable("TwitterLists", (string)null);
                 });
 
-            modelBuilder.Entity("RotoMonsterTwitter.Model.Entities.TwitterPlayer", b =>
-                {
-                    b.Property<int>("PlayerId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<bool>("FullNameOnly")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("NormalizedFullName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<string>("NormalizedLastName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<int>("SportId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("TeamId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("PlayerId");
-
-                    b.HasIndex("NormalizedLastName");
-
-                    b.HasIndex("SportId");
-
-                    b.HasIndex("TeamId");
-
-                    b.ToTable("TwitterPlayers", (string)null);
-                });
-
-            modelBuilder.Entity("RotoMonsterTwitter.Model.Entities.TwitterPlayerAlias", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Alias")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
-
-                    b.Property<string>("NormalizedAlias")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
-
-                    b.Property<int>("PlayerId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedAlias");
-
-                    b.HasIndex("PlayerId");
-
-                    b.ToTable("TwitterPlayerAliases", (string)null);
-                });
-
-            modelBuilder.Entity("RotoMonsterTwitter.Model.Entities.TwitterTeam", b =>
-                {
-                    b.Property<int>("TeamId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Abbreviation")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("NormalizedAbbreviation")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
-
-                    b.Property<string>("NormalizedFullName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<string>("NormalizedName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<int>("SportId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("TeamId");
-
-                    b.HasIndex("SportId");
-
-                    b.ToTable("TwitterTeams", (string)null);
-                });
-
-            modelBuilder.Entity("RotoMonsterTwitter.Model.Entities.TwitterTeamAlias", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Alias")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
-
-                    b.Property<string>("NormalizedAlias")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
-
-                    b.Property<int>("TeamId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedAlias");
-
-                    b.HasIndex("TeamId");
-
-                    b.ToTable("TwitterTeamAliases", (string)null);
-                });
-
             modelBuilder.Entity("RotoMonsterTwitter.Model.Entities.Tweet", b =>
                 {
                     b.HasOne("RotoMonsterTwitter.Model.Entities.TweetUser", "TweetUser")
@@ -519,81 +308,11 @@ namespace RotoMonsterTwitter.Model.Migrations
                     b.Navigation("Tweet");
                 });
 
-            modelBuilder.Entity("RotoMonsterTwitter.Model.Entities.TweetPlayer", b =>
-                {
-                    b.HasOne("RotoMonsterTwitter.Model.Entities.TwitterPlayer", "Player")
-                        .WithMany()
-                        .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RotoMonsterTwitter.Model.Entities.Tweet", "Tweet")
-                        .WithMany()
-                        .HasForeignKey("TweetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Player");
-
-                    b.Navigation("Tweet");
-                });
-
-            modelBuilder.Entity("RotoMonsterTwitter.Model.Entities.TweetTeam", b =>
-                {
-                    b.HasOne("RotoMonsterTwitter.Model.Entities.TwitterTeam", "Team")
-                        .WithMany()
-                        .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RotoMonsterTwitter.Model.Entities.Tweet", "Tweet")
-                        .WithMany()
-                        .HasForeignKey("TweetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Team");
-
-                    b.Navigation("Tweet");
-                });
-
-            modelBuilder.Entity("RotoMonsterTwitter.Model.Entities.TwitterPlayerAlias", b =>
-                {
-                    b.HasOne("RotoMonsterTwitter.Model.Entities.TwitterPlayer", "Player")
-                        .WithMany("Aliases")
-                        .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Player");
-                });
-
-            modelBuilder.Entity("RotoMonsterTwitter.Model.Entities.TwitterTeamAlias", b =>
-                {
-                    b.HasOne("RotoMonsterTwitter.Model.Entities.TwitterTeam", "Team")
-                        .WithMany("Aliases")
-                        .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Team");
-                });
-
             modelBuilder.Entity("RotoMonsterTwitter.Model.Entities.Tweet", b =>
                 {
                     b.Navigation("Keywords");
 
                     b.Navigation("Media");
-                });
-
-            modelBuilder.Entity("RotoMonsterTwitter.Model.Entities.TwitterPlayer", b =>
-                {
-                    b.Navigation("Aliases");
-                });
-
-            modelBuilder.Entity("RotoMonsterTwitter.Model.Entities.TwitterTeam", b =>
-                {
-                    b.Navigation("Aliases");
                 });
 #pragma warning restore 612, 618
         }

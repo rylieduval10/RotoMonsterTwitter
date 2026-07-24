@@ -238,3 +238,262 @@ BEGIN
 END $EF$;
 COMMIT;
 
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724155336_AddKeywordProcessing') THEN
+    ALTER TABLE "Tweets" ADD "ProcessedAt" timestamp with time zone;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724155336_AddKeywordProcessing') THEN
+    CREATE TABLE "TwitterKeywords" (
+        "Id" integer NOT NULL,
+        "Keyword" character varying(100) NOT NULL,
+        "NormalizedKeyword" character varying(100) NOT NULL,
+        "Category" character varying(40) NOT NULL,
+        "Weight" numeric(3,2) NOT NULL,
+        "IsActive" boolean NOT NULL,
+        CONSTRAINT "PK_TwitterKeywords" PRIMARY KEY ("Id")
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724155336_AddKeywordProcessing') THEN
+    CREATE TABLE "TweetKeywords" (
+        "TweetId" character varying(50) NOT NULL,
+        "KeywordId" integer NOT NULL,
+        "Occurrences" integer NOT NULL,
+        CONSTRAINT "PK_TweetKeywords" PRIMARY KEY ("TweetId", "KeywordId"),
+        CONSTRAINT "FK_TweetKeywords_Tweets_TweetId" FOREIGN KEY ("TweetId") REFERENCES "Tweets" ("TweetId") ON DELETE CASCADE,
+        CONSTRAINT "FK_TweetKeywords_TwitterKeywords_KeywordId" FOREIGN KEY ("KeywordId") REFERENCES "TwitterKeywords" ("Id") ON DELETE CASCADE
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724155336_AddKeywordProcessing') THEN
+    CREATE INDEX "IX_Tweets_ProcessedAt" ON "Tweets" ("ProcessedAt");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724155336_AddKeywordProcessing') THEN
+    CREATE INDEX "IX_TweetKeywords_KeywordId" ON "TweetKeywords" ("KeywordId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724155336_AddKeywordProcessing') THEN
+    CREATE INDEX "IX_TwitterKeywords_Category" ON "TwitterKeywords" ("Category");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724155336_AddKeywordProcessing') THEN
+    CREATE INDEX "IX_TwitterKeywords_NormalizedKeyword" ON "TwitterKeywords" ("NormalizedKeyword");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724155336_AddKeywordProcessing') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260724155336_AddKeywordProcessing', '10.0.10');
+    END IF;
+END $EF$;
+COMMIT;
+
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724164042_AddPlayersAndTeams') THEN
+    CREATE TABLE "TwitterPlayers" (
+        "PlayerId" integer NOT NULL,
+        "SportId" integer NOT NULL,
+        "FirstName" character varying(100) NOT NULL,
+        "LastName" character varying(100) NOT NULL,
+        "NormalizedFullName" character varying(200) NOT NULL,
+        "NormalizedLastName" character varying(100) NOT NULL,
+        "TeamId" integer,
+        "FullNameOnly" boolean NOT NULL,
+        "IsActive" boolean NOT NULL,
+        CONSTRAINT "PK_TwitterPlayers" PRIMARY KEY ("PlayerId")
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724164042_AddPlayersAndTeams') THEN
+    CREATE TABLE "TwitterTeams" (
+        "TeamId" integer NOT NULL,
+        "SportId" integer NOT NULL,
+        "City" character varying(100) NOT NULL,
+        "Name" character varying(100) NOT NULL,
+        "Abbreviation" character varying(10) NOT NULL,
+        "NormalizedFullName" character varying(200) NOT NULL,
+        "NormalizedName" character varying(100) NOT NULL,
+        "NormalizedAbbreviation" character varying(10) NOT NULL,
+        "IsActive" boolean NOT NULL,
+        CONSTRAINT "PK_TwitterTeams" PRIMARY KEY ("TeamId")
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724164042_AddPlayersAndTeams') THEN
+    CREATE TABLE "TweetPlayers" (
+        "TweetId" character varying(50) NOT NULL,
+        "PlayerId" integer NOT NULL,
+        "MatchType" character varying(20) NOT NULL,
+        "Confidence" numeric(3,2) NOT NULL,
+        "Occurrences" integer NOT NULL,
+        CONSTRAINT "PK_TweetPlayers" PRIMARY KEY ("TweetId", "PlayerId"),
+        CONSTRAINT "FK_TweetPlayers_Tweets_TweetId" FOREIGN KEY ("TweetId") REFERENCES "Tweets" ("TweetId") ON DELETE CASCADE,
+        CONSTRAINT "FK_TweetPlayers_TwitterPlayers_PlayerId" FOREIGN KEY ("PlayerId") REFERENCES "TwitterPlayers" ("PlayerId") ON DELETE CASCADE
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724164042_AddPlayersAndTeams') THEN
+    CREATE TABLE "TwitterPlayerAliases" (
+        "Id" integer GENERATED BY DEFAULT AS IDENTITY,
+        "PlayerId" integer NOT NULL,
+        "Alias" character varying(150) NOT NULL,
+        "NormalizedAlias" character varying(150) NOT NULL,
+        CONSTRAINT "PK_TwitterPlayerAliases" PRIMARY KEY ("Id"),
+        CONSTRAINT "FK_TwitterPlayerAliases_TwitterPlayers_PlayerId" FOREIGN KEY ("PlayerId") REFERENCES "TwitterPlayers" ("PlayerId") ON DELETE CASCADE
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724164042_AddPlayersAndTeams') THEN
+    CREATE TABLE "TweetTeams" (
+        "TweetId" character varying(50) NOT NULL,
+        "TeamId" integer NOT NULL,
+        "MatchType" character varying(20) NOT NULL,
+        "Confidence" numeric(3,2) NOT NULL,
+        "Occurrences" integer NOT NULL,
+        CONSTRAINT "PK_TweetTeams" PRIMARY KEY ("TweetId", "TeamId"),
+        CONSTRAINT "FK_TweetTeams_Tweets_TweetId" FOREIGN KEY ("TweetId") REFERENCES "Tweets" ("TweetId") ON DELETE CASCADE,
+        CONSTRAINT "FK_TweetTeams_TwitterTeams_TeamId" FOREIGN KEY ("TeamId") REFERENCES "TwitterTeams" ("TeamId") ON DELETE CASCADE
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724164042_AddPlayersAndTeams') THEN
+    CREATE TABLE "TwitterTeamAliases" (
+        "Id" integer GENERATED BY DEFAULT AS IDENTITY,
+        "TeamId" integer NOT NULL,
+        "Alias" character varying(150) NOT NULL,
+        "NormalizedAlias" character varying(150) NOT NULL,
+        CONSTRAINT "PK_TwitterTeamAliases" PRIMARY KEY ("Id"),
+        CONSTRAINT "FK_TwitterTeamAliases_TwitterTeams_TeamId" FOREIGN KEY ("TeamId") REFERENCES "TwitterTeams" ("TeamId") ON DELETE CASCADE
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724164042_AddPlayersAndTeams') THEN
+    CREATE INDEX "IX_TweetPlayers_Confidence" ON "TweetPlayers" ("Confidence");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724164042_AddPlayersAndTeams') THEN
+    CREATE INDEX "IX_TweetPlayers_PlayerId" ON "TweetPlayers" ("PlayerId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724164042_AddPlayersAndTeams') THEN
+    CREATE INDEX "IX_TweetTeams_TeamId" ON "TweetTeams" ("TeamId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724164042_AddPlayersAndTeams') THEN
+    CREATE INDEX "IX_TwitterPlayerAliases_NormalizedAlias" ON "TwitterPlayerAliases" ("NormalizedAlias");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724164042_AddPlayersAndTeams') THEN
+    CREATE INDEX "IX_TwitterPlayerAliases_PlayerId" ON "TwitterPlayerAliases" ("PlayerId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724164042_AddPlayersAndTeams') THEN
+    CREATE INDEX "IX_TwitterPlayers_NormalizedLastName" ON "TwitterPlayers" ("NormalizedLastName");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724164042_AddPlayersAndTeams') THEN
+    CREATE INDEX "IX_TwitterPlayers_SportId" ON "TwitterPlayers" ("SportId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724164042_AddPlayersAndTeams') THEN
+    CREATE INDEX "IX_TwitterPlayers_TeamId" ON "TwitterPlayers" ("TeamId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724164042_AddPlayersAndTeams') THEN
+    CREATE INDEX "IX_TwitterTeamAliases_NormalizedAlias" ON "TwitterTeamAliases" ("NormalizedAlias");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724164042_AddPlayersAndTeams') THEN
+    CREATE INDEX "IX_TwitterTeamAliases_TeamId" ON "TwitterTeamAliases" ("TeamId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724164042_AddPlayersAndTeams') THEN
+    CREATE INDEX "IX_TwitterTeams_SportId" ON "TwitterTeams" ("SportId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260724164042_AddPlayersAndTeams') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260724164042_AddPlayersAndTeams', '10.0.10');
+    END IF;
+END $EF$;
+COMMIT;
+

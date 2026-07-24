@@ -11,6 +11,9 @@ public class Tweet
     public DateTime? RetweetDate { get; set; }
     public DateTime? DateAdded { get; set; }
 
+    /// <summary>Null means it hasn't been through keyword extraction yet.</summary>
+    public DateTime? ProcessedAt { get; set; }
+
     public bool? IsRetweet { get; set; }
     public bool? IsSourceTweet { get; set; }
 
@@ -26,4 +29,5 @@ public class Tweet
 
     public TweetUser? TweetUser { get; set; }
     public List<TweetMedia> Media { get; set; } = new();
+    public List<TweetKeyword> Keywords { get; set; } = new();
 }

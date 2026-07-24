@@ -32,6 +32,8 @@ builder.Services.AddHttpClient<ITwitterPosterService, TwitterPosterService>(
 
 builder.Services.AddScoped<ITweetService, TweetService>();
 builder.Services.AddScoped<ITweetIngestService, TweetIngestService>();
+builder.Services.AddScoped<ITweetProcessingService, TweetProcessingService>();
+builder.Services.AddScoped<IPlayerImportService, PlayerImportService>();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
