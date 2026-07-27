@@ -20,6 +20,7 @@ public class TwitterDbContext : DbContext
     public DbSet<TwitterTeamAlias> TwitterTeamAliases => Set<TwitterTeamAlias>();
     public DbSet<TweetPlayer> TweetPlayers => Set<TweetPlayer>();
     public DbSet<TweetTeam> TweetTeams => Set<TweetTeam>();
+    public DbSet<PlayerStatusType> PlayerStatusTypes => Set<PlayerStatusType>();
 
     protected override void OnModelCreating(ModelBuilder b)
     {
@@ -129,11 +130,20 @@ public class TwitterDbContext : DbContext
             e.HasIndex(x => x.SportId);
             e.HasIndex(x => x.NormalizedLastName);
             e.HasIndex(x => x.TeamId);
+            e.HasIndex(x => x.PlayerStatusTypeId);
 
             e.HasMany(x => x.Aliases)
              .WithOne(x => x.Player!)
              .HasForeignKey(x => x.PlayerId)
              .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        b.Entity<PlayerStatusType>(e =>
+        {
+            e.ToTable("PlayerStatusTypes");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).ValueGeneratedNever();
+            e.Property(x => x.Title).HasMaxLength(100).IsRequired();
         });
 
         b.Entity<TwitterPlayerAlias>(e =>

@@ -64,6 +64,21 @@ public interface IRotoMonsterTwitterClient
     Task<GetTweetsResult> GetTopTweetsAsync(int sportId, int maxResults = 100,
         CancellationToken ct = default);
 
+    /// <summary>The status vocabulary players can be tagged with.</summary>
+    Task<GetPlayerStatusTypesResult> GetPlayerStatusTypesAsync(
+        CancellationToken ct = default);
+
+    /// <summary>Browse stored players and their current statuses.</summary>
+    Task<GetPlayersResult> GetPlayersAsync(GetPlayersRequest request,
+        CancellationToken ct = default);
+
+    /// <summary>
+    /// Set the status on specific players. Only the players you send are
+    /// touched; a null status id clears it.
+    /// </summary>
+    Task<SetPlayerStatusResult> SetPlayerStatusAsync(SetPlayerStatusRequest request,
+        CancellationToken ct = default);
+
     /// <summary>Post a tweet through the API's X credentials.</summary>
     Task<PostTweetResult> PostTweetAsync(string text, CancellationToken ct = default);
 }

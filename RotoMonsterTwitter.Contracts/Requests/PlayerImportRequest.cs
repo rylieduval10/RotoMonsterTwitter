@@ -27,6 +27,13 @@ public class PlayerImport
     /// </summary>
     public bool FullNameOnly { get; set; }
 
+    /// <summary>
+    /// One status at a time, from PlayerStatusTypes. Leave null to keep
+    /// whatever status the player already has - this import replaces the pool
+    /// wholesale, so an omitted status would otherwise be lost every time.
+    /// </summary>
+    public int? PlayerStatusTypeId { get; set; }
+
     public List<string> Aliases { get; set; } = new();
 }
 

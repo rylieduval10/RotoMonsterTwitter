@@ -87,6 +87,14 @@ public class PlayerImportService : IPlayerImportService
 
         if (request.Players.Count > 0)
         {
+            // Status is hand-curated, and this import replaces the pool
+            // wholesale - so read it before the delete and put it back on any
+            // player the payload doesn't explicitly set a status for.
+            var existingStatuses = await _db.TwitterPlayers
+                .Where(p => p.SportId == request.SportId
+                            && p.PlayerStatusTypeId != null)
+                .ToDictionaryAsync(p => p.PlayerId, p => p.PlayerStatusTypeId, ct);
+
             await _db.TwitterPlayers
                 .Where(p => p.SportId == request.SportId)
                 .ExecuteDeleteAsync(ct);
@@ -99,6 +107,8 @@ public class PlayerImportService : IPlayerImportService
                     continue;
                 }
 
+                existingStatuses.TryGetValue(incoming.PlayerId, out var priorStatus);
+
                 var player = new TwitterPlayer
                 {
                     PlayerId = incoming.PlayerId,
@@ -109,7 +119,8 @@ public class PlayerImportService : IPlayerImportService
                     FullNameOnly = incoming.FullNameOnly,
                     NormalizedFullName = TextNormalizer.NormalizeTerm(
                         $"{incoming.FirstName} {incoming.LastName}"),
-                    NormalizedLastName = TextNormalizer.NormalizeTerm(incoming.LastName)
+                    NormalizedLastName = TextNormalizer.NormalizeTerm(incoming.LastName),
+                    PlayerStatusTypeId = incoming.PlayerStatusTypeId ?? priorStatus
                 };
 
                 foreach (var alias in incoming.Aliases.Distinct())

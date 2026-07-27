@@ -177,6 +177,20 @@ public class RotoMonsterTwitterClient : IRotoMonsterTwitterClient
             MaxResults = maxResults
         }, ct);
 
+    public Task<GetPlayerStatusTypesResult> GetPlayerStatusTypesAsync(
+        CancellationToken ct = default)
+        => GetAsync<GetPlayerStatusTypesResult>("api/players/StatusTypes", ct);
+
+    public Task<GetPlayersResult> GetPlayersAsync(
+        GetPlayersRequest request, CancellationToken ct = default)
+        => PostAsync<GetPlayersRequest, GetPlayersResult>(
+            "api/players/GetPlayers", request, ct);
+
+    public Task<SetPlayerStatusResult> SetPlayerStatusAsync(
+        SetPlayerStatusRequest request, CancellationToken ct = default)
+        => PostAsync<SetPlayerStatusRequest, SetPlayerStatusResult>(
+            "api/players/SetStatus", request, ct);
+
     private async Task<TResult> GetAsync<TResult>(string path, CancellationToken ct)
         where TResult : BaseResult, new()
     {

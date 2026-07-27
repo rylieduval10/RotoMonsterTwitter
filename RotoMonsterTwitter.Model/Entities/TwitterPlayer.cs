@@ -23,5 +23,10 @@ public class TwitterPlayer
 
     public bool IsActive { get; set; } = true;
 
+    /// <summary>
+    /// One status at a time, from PlayerStatusTypes. Null means none set.
+    /// </summary>
+    public int? PlayerStatusTypeId { get; set; }
+
     public List<TwitterPlayerAlias> Aliases { get; set; } = new();
 }
