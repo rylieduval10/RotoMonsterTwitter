@@ -20,6 +20,10 @@ public class GetTweetsRequest
 
     public string? SearchText { get; set; }
 
+    /// <summary>Only tweets from users carrying the flag. Null = no filter.</summary>
+    public bool? IsNews { get; set; }
+    public bool? IsTop { get; set; }
+
     public int Skip { get; set; } = 0;
     public int MaxResults { get; set; } = 100;
 

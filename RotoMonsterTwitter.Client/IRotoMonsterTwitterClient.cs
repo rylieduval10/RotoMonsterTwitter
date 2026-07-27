@@ -45,6 +45,25 @@ public interface IRotoMonsterTwitterClient
     Task<ImportResult> ImportPlayersAsync(PlayerImportRequest request,
         CancellationToken ct = default);
 
+    /// <summary>Browse stored users, optionally filtered by flag.</summary>
+    Task<GetUsersResult> GetUsersAsync(GetUsersRequest request,
+        CancellationToken ct = default);
+
+    /// <summary>
+    /// Set IsNews / IsTop on specific users. Only the users you send are
+    /// touched; a null flag is left as it was.
+    /// </summary>
+    Task<SetUserFlagsResult> SetUserFlagsAsync(SetUserFlagsRequest request,
+        CancellationToken ct = default);
+
+    /// <summary>Tweets from IsNews accounts only.</summary>
+    Task<GetTweetsResult> GetNewsTweetsAsync(int sportId, int maxResults = 100,
+        CancellationToken ct = default);
+
+    /// <summary>Tweets from IsTop accounts only.</summary>
+    Task<GetTweetsResult> GetTopTweetsAsync(int sportId, int maxResults = 100,
+        CancellationToken ct = default);
+
     /// <summary>Post a tweet through the API's X credentials.</summary>
     Task<PostTweetResult> PostTweetAsync(string text, CancellationToken ct = default);
 }

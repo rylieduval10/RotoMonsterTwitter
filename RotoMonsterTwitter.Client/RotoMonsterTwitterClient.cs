@@ -149,6 +149,34 @@ public class RotoMonsterTwitterClient : IRotoMonsterTwitterClient
 
     // -------------------------------------------------------------- plumbing
 
+    public Task<GetUsersResult> GetUsersAsync(
+        GetUsersRequest request, CancellationToken ct = default)
+        => PostAsync<GetUsersRequest, GetUsersResult>(
+            "api/users/GetUsers", request, ct);
+
+    public Task<SetUserFlagsResult> SetUserFlagsAsync(
+        SetUserFlagsRequest request, CancellationToken ct = default)
+        => PostAsync<SetUserFlagsRequest, SetUserFlagsResult>(
+            "api/users/SetFlags", request, ct);
+
+    public Task<GetTweetsResult> GetNewsTweetsAsync(
+        int sportId, int maxResults = 100, CancellationToken ct = default)
+        => GetTweetsAsync(new GetTweetsRequest
+        {
+            SportId = sportId,
+            IsNews = true,
+            MaxResults = maxResults
+        }, ct);
+
+    public Task<GetTweetsResult> GetTopTweetsAsync(
+        int sportId, int maxResults = 100, CancellationToken ct = default)
+        => GetTweetsAsync(new GetTweetsRequest
+        {
+            SportId = sportId,
+            IsTop = true,
+            MaxResults = maxResults
+        }, ct);
+
     private async Task<TResult> GetAsync<TResult>(string path, CancellationToken ct)
         where TResult : BaseResult, new()
     {

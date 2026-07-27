@@ -1,22 +1,20 @@
-namespace RotoMonsterTwitter.Model.Entities;
+namespace RotoMonsterTwitter.Contracts.Results;
 
-public class TweetUser
+public class GetUsersResult : BaseResult
 {
-    public long Id { get; set; }
+    public int TotalCount { get; set; }
+    public List<TweetUserResult> Users { get; set; } = new();
+}
+
+public class TweetUserResult
+{
     public string TwitterUserId { get; set; } = "";
     public string ScreenUsername { get; set; } = "";
     public string DisplayName { get; set; } = "";
     public string ImageUrl { get; set; } = "";
-
     public bool IsVerified { get; set; }
     public bool IsBlueVerified { get; set; }
-    public string? VerifiedType { get; set; }
-
-    /// <summary>Curated: a short list of accounts that break news.</summary>
     public bool IsNews { get; set; }
-
-    /// <summary>Curated: a wider list of accounts worth watching.</summary>
     public bool IsTop { get; set; }
-
     public DateTime? LastSeenAt { get; set; }
 }

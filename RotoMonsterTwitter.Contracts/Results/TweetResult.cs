@@ -16,6 +16,8 @@ public class TweetResult
     public string ImageUrl { get; set; } = "";
     public bool IsVerified { get; set; }
     public bool IsBlueVerified { get; set; }
+    public bool IsNews { get; set; }
+    public bool IsTop { get; set; }
 
     public bool? IsRetweet { get; set; }
     public DateTime? RetweetDate { get; set; }

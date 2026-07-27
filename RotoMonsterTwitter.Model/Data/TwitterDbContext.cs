@@ -84,6 +84,8 @@ public class TwitterDbContext : DbContext
 
             e.HasIndex(x => x.TwitterUserId).IsUnique();
             e.HasIndex(x => x.ScreenUsername).IsUnique();
+            e.HasIndex(x => x.IsNews);
+            e.HasIndex(x => x.IsTop);
         });
 
         b.Entity<TwitterKeyword>(e =>
