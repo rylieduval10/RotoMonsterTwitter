@@ -38,6 +38,16 @@ public class TweetResult
     /// <summary>Teams referenced, best match first.</summary>
     public List<TweetTeamMatch> Teams { get; set; } = new();
 
+    /// <summary>Link to the tweet on X. Derived from the user and tweet id.</summary>
+    public string TweetUrl =>
+        string.IsNullOrEmpty(ScreenUsername) || string.IsNullOrEmpty(TweetId)
+            ? ""
+            : $"https://twitter.com/{ScreenUsername}/status/{TweetId}";
+
+    /// <summary>How long ago the tweet was posted, as of now.</summary>
+    public TimeSpan TimeSinceCreated => DateTime.UtcNow - CreatedDate;
+
+
     /// <summary>Injury / availability / transaction keywords found.</summary>
     public List<TweetKeywordMatch> Keywords { get; set; } = new();
 }
@@ -84,4 +94,5 @@ public class TweetKeywordMatch
     public string Category { get; set; } = "";
     public decimal Weight { get; set; }
     public int Occurrences { get; set; }
+
 }
