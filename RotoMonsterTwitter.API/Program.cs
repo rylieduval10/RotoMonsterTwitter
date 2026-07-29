@@ -19,6 +19,9 @@ builder.Services.Configure<TwitterPostOptions>(
 builder.Services.Configure<ApiKeyOptions>(
     builder.Configuration.GetSection(ApiKeyOptions.SectionName));
 
+builder.Services.Configure<AiOptions>(
+    builder.Configuration.GetSection(AiOptions.SectionName));
+
 builder.Services.AddHttpClient<ITwitterApiService, TwitterApiService>((sp, client) =>
 {
     var options = sp.GetRequiredService<IOptions<TwitterApiOptions>>().Value;
@@ -29,6 +32,9 @@ builder.Services.AddHttpClient<ITwitterApiService, TwitterApiService>((sp, clien
 
 builder.Services.AddHttpClient<ITwitterPosterService, TwitterPosterService>(
     client => client.Timeout = TimeSpan.FromSeconds(30));
+
+builder.Services.AddHttpClient<IAiAnalysisService, GeminiAnalysisService>(
+    client => client.Timeout = TimeSpan.FromSeconds(60));
 
 builder.Services.AddScoped<ITweetService, TweetService>();
 builder.Services.AddScoped<ITweetIngestService, TweetIngestService>();

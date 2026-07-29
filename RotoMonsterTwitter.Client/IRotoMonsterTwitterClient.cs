@@ -39,6 +39,13 @@ public interface IRotoMonsterTwitterClient
     Task<IngestResult> IngestListAsync(long listId, CancellationToken ct = default);
 
     /// <summary>
+    /// Summarize a tweet with AI (the Auto Fill button). Returns the summary
+    /// text; you decide where it goes.
+    /// </summary>
+    Task<AnalyzeTweetResult> AnalyzeWithAIAsync(string text, string? tweetId = null,
+        CancellationToken ct = default);
+
+    /// <summary>
     /// Replace the player and team pool for a sport. Send the complete
     /// set each time - anything missing from it is dropped.
     /// </summary>

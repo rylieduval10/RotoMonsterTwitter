@@ -135,6 +135,12 @@ public class RotoMonsterTwitterClient : IRotoMonsterTwitterClient
 
     // --------------------------------------------------------------- import
 
+    public Task<AnalyzeTweetResult> AnalyzeWithAIAsync(
+        string text, string? tweetId = null, CancellationToken ct = default)
+        => PostAsync<AnalyzeTweetRequest, AnalyzeTweetResult>(
+            "api/ai/analyze",
+            new AnalyzeTweetRequest { Text = text, TweetId = tweetId }, ct);
+
     public Task<ImportResult> ImportPlayersAsync(
         PlayerImportRequest request, CancellationToken ct = default)
         => PostAsync<PlayerImportRequest, ImportResult>(
