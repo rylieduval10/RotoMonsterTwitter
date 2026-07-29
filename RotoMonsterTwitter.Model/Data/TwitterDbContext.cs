@@ -42,6 +42,8 @@ public class TwitterDbContext : DbContext
             e.HasIndex(x => new { x.SportId, x.CreatedDate });
             e.HasIndex(x => x.DateAdded);
             e.HasIndex(x => x.ProcessedAt);
+            e.HasIndex(x => x.IsNews);
+            e.HasIndex(x => x.IsTop);
             e.HasIndex(x => new { x.SportId, x.DateAdded });
             e.HasIndex(x => x.TwitterUserId);
 

@@ -497,3 +497,118 @@ BEGIN
 END $EF$;
 COMMIT;
 
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260727170138_AddUserNewsTopFlags') THEN
+    ALTER TABLE "TweetUsers" ADD "IsNews" boolean NOT NULL DEFAULT FALSE;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260727170138_AddUserNewsTopFlags') THEN
+    ALTER TABLE "TweetUsers" ADD "IsTop" boolean NOT NULL DEFAULT FALSE;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260727170138_AddUserNewsTopFlags') THEN
+    CREATE INDEX "IX_TweetUsers_IsNews" ON "TweetUsers" ("IsNews");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260727170138_AddUserNewsTopFlags') THEN
+    CREATE INDEX "IX_TweetUsers_IsTop" ON "TweetUsers" ("IsTop");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260727170138_AddUserNewsTopFlags') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260727170138_AddUserNewsTopFlags', '10.0.10');
+    END IF;
+END $EF$;
+COMMIT;
+
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260727173748_AddPlayerStatusTypes') THEN
+    ALTER TABLE "TwitterPlayers" ADD "PlayerStatusTypeId" integer;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260727173748_AddPlayerStatusTypes') THEN
+    CREATE TABLE "PlayerStatusTypes" (
+        "Id" integer NOT NULL,
+        "Title" character varying(100) NOT NULL,
+        "IsActive" boolean NOT NULL,
+        CONSTRAINT "PK_PlayerStatusTypes" PRIMARY KEY ("Id")
+    );
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260727173748_AddPlayerStatusTypes') THEN
+    CREATE INDEX "IX_TwitterPlayers_PlayerStatusTypeId" ON "TwitterPlayers" ("PlayerStatusTypeId");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260727173748_AddPlayerStatusTypes') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260727173748_AddPlayerStatusTypes', '10.0.10');
+    END IF;
+END $EF$;
+COMMIT;
+
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260729153240_AddTweetNewsTopFlags') THEN
+    ALTER TABLE "Tweets" ADD "IsNews" boolean NOT NULL DEFAULT FALSE;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260729153240_AddTweetNewsTopFlags') THEN
+    ALTER TABLE "Tweets" ADD "IsTop" boolean NOT NULL DEFAULT FALSE;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260729153240_AddTweetNewsTopFlags') THEN
+    CREATE INDEX "IX_Tweets_IsNews" ON "Tweets" ("IsNews");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260729153240_AddTweetNewsTopFlags') THEN
+    CREATE INDEX "IX_Tweets_IsTop" ON "Tweets" ("IsTop");
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20260729153240_AddTweetNewsTopFlags') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20260729153240_AddTweetNewsTopFlags', '10.0.10');
+    END IF;
+END $EF$;
+COMMIT;
+

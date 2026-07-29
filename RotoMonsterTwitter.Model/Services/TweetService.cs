@@ -28,10 +28,10 @@ public class TweetService : ITweetService
                                      == request.ScreenUsername.ToLower());
 
         if (request.IsNews.HasValue)
-            query = query.Where(t => t.TweetUser!.IsNews == request.IsNews.Value);
+            query = query.Where(t => t.IsNews == request.IsNews.Value);
 
         if (request.IsTop.HasValue)
-            query = query.Where(t => t.TweetUser!.IsTop == request.IsTop.Value);
+            query = query.Where(t => t.IsTop == request.IsTop.Value);
 
         if (request.CreatedOnOrAfter.HasValue)
             query = query.Where(t => t.CreatedDate >= request.CreatedOnOrAfter.Value);
@@ -199,8 +199,8 @@ public class TweetService : ITweetService
                 ImageUrl = t.TweetUser?.ImageUrl ?? "",
                 IsVerified = t.TweetUser?.IsVerified ?? false,
                 IsBlueVerified = t.TweetUser?.IsBlueVerified ?? false,
-                IsNews = t.TweetUser?.IsNews ?? false,
-                IsTop = t.TweetUser?.IsTop ?? false,
+                IsNews = t.IsNews,
+                IsTop = t.IsTop,
                 IsRetweet = t.IsRetweet,
                 RetweetDate = t.RetweetDate,
                 RetweetUserScreenName = t.RetweetUserScreenName,

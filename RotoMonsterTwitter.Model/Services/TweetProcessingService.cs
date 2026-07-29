@@ -73,7 +73,14 @@ public class TweetProcessingService : ITweetProcessingService
         var tweets = await query
             .OrderBy(t => t.CreatedDate)
             .Take(Math.Clamp(batchSize, 1, 5000))
-            .Select(t => new { t.TweetId, t.Text, t.SportId })
+            .Select(t => new
+            {
+                t.TweetId,
+                t.Text,
+                t.SportId,
+                UserIsNews = t.TweetUser != null && t.TweetUser.IsNews,
+                UserIsTop = t.TweetUser != null && t.TweetUser.IsTop
+            })
             .ToListAsync(ct);
 
         if (tweets.Count == 0) return result;
@@ -92,10 +99,16 @@ public class TweetProcessingService : ITweetProcessingService
         var playerMatches = new List<TweetPlayer>();
         var teamMatches = new List<TweetTeam>();
 
+        // Per-tweet flag decisions, applied in one pass after matching.
+        var newsFlag = new Dictionary<string, bool>();
+        var topFlag = new Dictionary<string, bool>();
+
         foreach (var tweet in tweets)
         {
             var text = TextNormalizer.NormalizeText(tweet.Text);
             var matchedAnything = false;
+            var hadKeyword = false;
+            var hadPlayer = false;
 
             foreach (var keyword in keywords)
             {
@@ -110,6 +123,7 @@ public class TweetProcessingService : ITweetProcessingService
                 });
 
                 matchedAnything = true;
+                hadKeyword = true;
             }
 
             // Teams first, so their ids can disambiguate players below.
@@ -134,9 +148,16 @@ public class TweetProcessingService : ITweetProcessingService
                 match.TweetId = tweet.TweetId;
                 playerMatches.Add(match);
                 matchedAnything = true;
+                hadPlayer = true;
             }
 
             if (matchedAnything) result.TweetsWithMatches++;
+
+            // IsNews follows the user. IsTop follows the user OR a tweet that
+            // carries both a player and a keyword - the case a user flag can't
+            // express.
+            newsFlag[tweet.TweetId] = tweet.UserIsNews;
+            topFlag[tweet.TweetId] = tweet.UserIsTop || (hadPlayer && hadKeyword);
         }
 
         if (keywordMatches.Count > 0) _db.TweetKeywords.AddRange(keywordMatches);
@@ -149,6 +170,11 @@ public class TweetProcessingService : ITweetProcessingService
             .Where(t => tweetIds.Contains(t.TweetId))
             .ExecuteUpdateAsync(s => s.SetProperty(t => t.ProcessedAt, stamp), ct);
 
+        // Apply the flags in four grouped updates (news true/false, top
+        // true/false) rather than one round trip per tweet.
+        await ApplyFlagAsync(newsFlag, isNews: true, ct);
+        await ApplyFlagAsync(topFlag, isNews: false, ct);
+
         await _db.SaveChangesAsync(ct);
 
         result.TweetsProcessed = tweets.Count;
@@ -159,6 +185,32 @@ public class TweetProcessingService : ITweetProcessingService
             .CountAsync(t => t.ProcessedAt == null, ct);
 
         return result;
+    }
+
+    /// <summary>
+    /// Sets one boolean flag on a set of tweets, grouping by the value so the
+    /// whole batch is at most two UPDATE statements instead of one per tweet.
+    /// </summary>
+    private async Task ApplyFlagAsync(
+        Dictionary<string, bool> decisions, bool isNews, CancellationToken ct)
+    {
+        foreach (var value in new[] { true, false })
+        {
+            var ids = decisions.Where(kv => kv.Value == value)
+                               .Select(kv => kv.Key).ToList();
+            if (ids.Count == 0) continue;
+
+            if (isNews)
+            {
+                await _db.Tweets.Where(t => ids.Contains(t.TweetId))
+                    .ExecuteUpdateAsync(s => s.SetProperty(t => t.IsNews, value), ct);
+            }
+            else
+            {
+                await _db.Tweets.Where(t => ids.Contains(t.TweetId))
+                    .ExecuteUpdateAsync(s => s.SetProperty(t => t.IsTop, value), ct);
+            }
+        }
     }
 
     /// <summary>

@@ -14,6 +14,15 @@ public class Tweet
     /// <summary>Null means it hasn't been through keyword extraction yet.</summary>
     public DateTime? ProcessedAt { get; set; }
 
+    /// <summary>Set from the tweet's user during processing. Filterable.</summary>
+    public bool IsNews { get; set; }
+
+    /// <summary>
+    /// Set during processing: the user is IsTop, or the tweet has at least one
+    /// player and at least one keyword. A per-tweet signal, not a per-user one.
+    /// </summary>
+    public bool IsTop { get; set; }
+
     public bool? IsRetweet { get; set; }
     public bool? IsSourceTweet { get; set; }
 
