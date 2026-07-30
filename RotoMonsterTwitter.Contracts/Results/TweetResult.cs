@@ -2,6 +2,8 @@ namespace RotoMonsterTwitter.Contracts.Results;
 
 public class TweetResult
 {
+        public string AiText { get; set; }
+
     public string TweetId { get; set; } = "";
     public int SportId { get; set; }
 
