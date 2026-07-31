@@ -165,6 +165,19 @@ public class RotoMonsterTwitterClient : IRotoMonsterTwitterClient
         => PostAsync<SetUserFlagsRequest, SetUserFlagsResult>(
             "api/users/SetFlags", request, ct);
 
+    public Task<SetAiTextResult> SetAiTextAsync(
+        SetAiTextRequest request, CancellationToken ct = default)
+        => PostAsync<SetAiTextRequest, SetAiTextResult>(
+            "api/tweets/SetAiText", request, ct);
+
+    public Task<SetAiTextResult> SetAiTextAsync(
+        string tweetId, string aiText, CancellationToken ct = default)
+        => SetAiTextAsync(new SetAiTextRequest
+        {
+            TweetId = tweetId,
+            AiText = aiText
+        }, ct);
+
     public Task<GetTweetsResult> GetNewsTweetsAsync(
         int sportId, int maxResults = 100, CancellationToken ct = default)
         => GetTweetsAsync(new GetTweetsRequest

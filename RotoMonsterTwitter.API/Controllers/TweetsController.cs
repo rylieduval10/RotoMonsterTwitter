@@ -39,6 +39,12 @@ public class TweetsController : ControllerBase
         [FromBody] DeleteTweetsRequest request, CancellationToken ct)
         => Ok(await _tweets.DeleteTweetsAsync(request, ct));
 
+    /// <summary>Store the AI summary for a tweet so later reads return it.</summary>
+    [HttpPost("SetAiText")]
+    public async Task<IActionResult> SetAiText(
+        [FromBody] SetAiTextRequest request, CancellationToken ct)
+        => Ok(await _tweets.SetAiTextAsync(request, ct));
+
     [HttpPost("PostTweet")]
     public async Task<IActionResult> PostTweet(
         [FromBody] PostTweetRequest request, CancellationToken ct)

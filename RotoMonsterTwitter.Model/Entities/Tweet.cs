@@ -30,6 +30,9 @@ public class Tweet
 
     public string Text { get; set; } = "";
 
+    /// <summary>AI-generated summary. Null until one has been stored.</summary>
+    public string? AiText { get; set; }
+
     public int? RetweetCount { get; set; }
     public int? Followers { get; set; }
 

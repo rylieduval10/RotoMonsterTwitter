@@ -141,6 +141,38 @@ public class TweetService : ITweetService
     /// batched queries, then attaches them - avoids a per-tweet round trip and
     /// avoids Include-multiplication on the main query.
     /// </summary>
+    public async Task<SetAiTextResult> SetAiTextAsync(
+        SetAiTextRequest request, CancellationToken ct = default)
+    {
+        var result = new SetAiTextResult { TweetId = request.TweetId ?? "" };
+
+        if (string.IsNullOrWhiteSpace(request.TweetId))
+        {
+            result.Success = false;
+            result.ErrorMessage = "TweetId is required.";
+            return result;
+        }
+
+        var tweet = await _db.Tweets
+            .FirstOrDefaultAsync(t => t.TweetId == request.TweetId, ct);
+
+        if (tweet == null)
+        {
+            result.Found = false;
+            return result;
+        }
+
+        tweet.AiText = string.IsNullOrWhiteSpace(request.AiText)
+            ? null
+            : request.AiText.Trim();
+
+        await _db.SaveChangesAsync(ct);
+
+        result.Found = true;
+        result.AiText = tweet.AiText;
+        return result;
+    }
+
     private async Task<List<TweetResult>> MapManyAsync(
         List<Tweet> tweets, CancellationToken ct)
     {
@@ -193,6 +225,7 @@ public class TweetService : ITweetService
                 CreatedDate = t.CreatedDate,
                 DateAdded = t.DateAdded,
                 Text = t.Text,
+                AiText = t.AiText,
                 TwitterUserId = t.TwitterUserId,
                 ScreenUsername = t.TweetUser?.ScreenUsername ?? "",
                 DisplayName = t.TweetUser?.DisplayName ?? "",
